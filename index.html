@@ -19,6 +19,12 @@ function wrap(wrapper, View, ...args) {
   return Wrapper.bind(Wrapper, wrapper, View, ...args);
 }
 
+function bind(target, eventName, listener) {
+  target.addEventListener(eventName, listener);
+  return function () {
+    target.removeEventListener(eventName, listener);
+  }
+}
 
 class Component {
   constructor() {
@@ -26,11 +32,13 @@ class Component {
   }
 
   onmount() {
-    console.log('mounted', 'component', 'something that should be canceled (bind event listener)' );
+    console.log('mounted', 'component', 'something that should be canceled (bind event listener)');
+    this.unbind = bind(window, 'click', function (e) { console.log(e) });
   }
 
   onunmount() {
     console.log('must unbind');
+    this.unbind();
   }
 
   update(data) {
@@ -105,5 +113,6 @@ setChildren(wrapper, [template]);
 4 mounted component
 */
 
+setChildren(wrapper, []);
 </script>
 </body>
