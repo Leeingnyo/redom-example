@@ -1,0 +1,109 @@
+<meta charset="utf-8">
+<body>
+<div id="wrapper"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/redom/3.22.1/redom.js"></script>
+<script>
+const { el, list, setChildren } = redom;
+
+class Wrapper {
+  constructor(wrapper, View, ...args) {
+    this.el = el(wrapper, this.view = new View(...args));
+  }
+
+  update(...args) {
+    this.view.update(...args);
+  }
+}
+
+function wrap(wrapper, View, ...args) {
+  return Wrapper.bind(Wrapper, wrapper, View, ...args);
+}
+
+
+class Component {
+  constructor() {
+    this.el = el('span');
+  }
+
+  onmount() {
+    console.log('mounted', 'component', 'something that should be canceled (bind event listener)' );
+  }
+
+  onunmount() {
+    console.log('must unbind');
+  }
+
+  update(data) {
+    this.el.textContent = `Data ${data.id}`;
+  }
+}
+
+class Inner {
+  constructor() {
+    this.el = el('section',
+      this.list = list('ol.component-list', wrap('li.component-list-item', Component), 'id')
+    );
+  }
+
+  onmount() {
+    console.log('mounted', 'inner');
+  }
+
+  onunmount() {
+    console.log('unmounted', 'inner');
+  }
+
+  update(inner) {
+    this.list.update(inner.data);
+  }
+}
+
+class Outer {
+  constructor() {
+    this.el = el('section',
+      this.list = list('section', Inner, 'innerId')
+    );
+  }
+
+  onmount() {
+    console.log('mounted', 'outer');
+  }
+
+  onunmount() {
+    console.log('unmounted', 'outer');
+  }
+
+  update(outer) {
+    const inner = outer.inner;
+    this.list.update(inner);
+  }
+}
+
+// data
+const data = {
+  inner: [ { id: undefined, data: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] } ]
+}
+
+// compile system
+const templates = { Outer, Inner, Component };
+const page = 'Outer';
+
+// compile
+const Template = templates[page];
+const template = new Template();
+template.update && template.update(data);
+
+// render
+const wrapper = document.querySelector('#wrapper');
+setChildren(wrapper, [template]);
+/*
+4 mounted component 
+  mounted inner
+4 mounted component
+  mounted outer
+  mounted inner
+4 mounted component
+*/
+
+</script>
+</body>
