@@ -32,12 +32,12 @@ class Component {
   }
 
   onmount() {
-    console.log('mounted', 'component', 'something that should be canceled (bind event listener)');
+    console.log('mounted', 'component', '(something that should be canceled (bind event listener))');
     this.unbind = bind(window, 'click', function (e) { console.log(e) });
   }
 
   onunmount() {
-    console.log('must unbind');
+    console.log('unmounted', 'component', '(must unbind)');
     this.unbind();
   }
 
@@ -113,6 +113,7 @@ setChildren(wrapper, [template]);
 4 mounted component
 */
 
+console.log('unmount!');
 setChildren(wrapper, []);
 </script>
 </body>
