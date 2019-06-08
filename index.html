@@ -100,14 +100,17 @@ const page = 'Outer';
 const Template = templates[page];
 const template = new Template();
 template.update && template.update(data);
+/*
+4 mounted component
+  mounted inner
+4 mounted component
+*/
 
 // render
 const wrapper = document.querySelector('#wrapper');
+console.log('mount!');
 setChildren(wrapper, [template]);
 /*
-4 mounted component 
-  mounted inner
-4 mounted component
   mounted outer
   mounted inner
 4 mounted component
