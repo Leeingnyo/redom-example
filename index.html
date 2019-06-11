@@ -73,6 +73,8 @@ class Outer {
     );
   }
 
+  /*
+  // remove lifecycle event handler of the parent
   onmount() {
     console.log('mounted', 'outer');
   }
@@ -80,6 +82,7 @@ class Outer {
   onunmount() {
     console.log('unmounted', 'outer');
   }
+  */
 
   update(outer) {
     const inner = outer.inner;
@@ -111,12 +114,16 @@ const wrapper = document.querySelector('#wrapper');
 console.log('mount!');
 setChildren(wrapper, [template]);
 /*
-  mounted outer
+nothing
+expected
   mounted inner
 4 mounted component
 */
 
 console.log('unmount!');
 setChildren(wrapper, []);
+/*
+nothing
+*/
 </script>
 </body>
